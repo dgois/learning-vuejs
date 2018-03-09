@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>VueJs</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+    <style>
+        .post-list {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container-fluid">
+            <div class="jumbotron">
+                <h1 class="text-center">VueJs First Exercise</h1>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <div class="form-group">
+                        <h2>New Post</h2>
+                        <label for="title">Title</label>
+                        <input v-model="post.title" placeholder="Enter title" type="text" class="form-control" id="title" aria-describedby="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea v-model="post.description" placeholder="Enter description" type="text" class="form-control" id="description" aria-describedby="description" required></textarea>
+                    </div>
+                    <button v-on:click="createNewPost" class="btn btn-primary">Create</button>
+                </div>
+                <div class="col-2"></div>
+            </div>
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    <post-list v-bind:posts="posts"></post-list>
+                </div>
+                <div class="col-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function Post(parameters) {
+            console.log(parameters);
+            this.id = parameters.id;
+            this.title = parameters.title;
+            this.description = parameters.description;
+        }
+
+        Post.count = 1;
+
+        let PostList = Vue.component('post-list', {
+            props: ['posts'],
+            template: `
+				<div class="post-list">
+					<div v-if="posts.length">
+						<h2>Latest Posts</h2>
+						<post-item v-for="p in posts" v-bind:post="p" :key="p.id"></post-item>
+					</div>
+					<p v-else class="text-center">No post was written!</p>
+				<div>
+        	`
+        });
+
+        let PostItem = Vue.component('post-item', {
+            props: ['post'],
+            template: `
+				<div>
+					<h3>{{ post.title }}</h3>
+					<p>{{ post.description }}</p>
+				<div>
+				<hr>
+			`
+        });
+
+        var app = new Vue({
+            el: '#app',
+            components: {
+                'post-item': PostItem,
+                'post-list': PostList
+            },
+            data: {
+                post: {
+                    title: '',
+                    description: ''
+                },
+                posts: []
+            },
+            methods: {
+                createNewPost: function() {
+                    let newPost = new Post({
+                        key: Post.count,
+                        title: this.post.title,
+                        description: this.post.description
+                    });
+                    Post.count++;
+                    this.posts.push(newPost);
+                    this.post = {};
+                }
+            }
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+
+</html>
